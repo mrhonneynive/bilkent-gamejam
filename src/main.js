@@ -1,11 +1,14 @@
 import kaplay from "kaplay";
 import "kaplay/global"; // uncomment if you want to use without the prefix
 kaplay({
-  width: 1280,
-  height: 720,
+  width: 1520,
+  height: 750,
   letterbox: true,
   debug: true,
+  background: [ 135, 206, 235, ],
 });
+
+
 
 loadRoot("./");
 
@@ -24,6 +27,50 @@ scene("menu", () => {
 });
 
 scene("game", () => {
+
+
+    loadSprite("ground", "sprites/ground.png");
+    loadSprite("atam", "sprites/atam.png"); 
+    loadSprite("player", "sprites/player.png");
+    loadSprite("sun", "sprites/sun.png");
+    loadSprite("cloud1", "sprites/cloud1.png");
+    loadSprite("cloud2", "sprites/cloud2.png");
+  
+
+    add([
+      rect(20, 20000),
+      area(),
+      outline(1),
+      pos(0, 40),
+      body({ isStatic: true }),
+      opacity(0),
+    ]);
+    // Add an invisibl floor
+    add([
+      rect(200000, 20),
+      area(),
+      outline(1),
+      pos(0, 720 - 60),
+      body({ isStatic: true }),
+    ]);
+
+    add([
+      sprite("atam"),
+      pos(1400, 600), // Adjust the position as needed
+      scale(0.3),
+      anchor("center"),
+      z(100),
+    ]);
+
+    add([
+      sprite("sun"),
+      pos(1350, 100), // Adjust the position as needed
+      scale(0.2),
+      anchor("center"),
+      fixed(),
+    ]);
+    
+
   loadSprite("player", "sprites/player.png", {
     sliceX: 4,
     sliceY: 6,
@@ -40,15 +87,53 @@ scene("game", () => {
       // slide: { from: 10, to: 12, speed: 10, loop: false },
     },
   });
+
   
   loadSprite("ground", "sprites/ground.png");
-  add([
-    sprite("ground"), // Use the ground sprite
-    pos(-400, height() + 650), // Position it at the bottom of the screen
-    // area(), // Enable collision detection
-    body({ isStatic: true }), // Make it static so the player can walk on it
-    anchor("botleft"), // Align it properly at the bottom left
-  ]);
+  // Yer sprite'larını ekranın altına yerleştir
+  for (let i = 0; i < 20; i++) {
+    add([
+      sprite("ground"),
+      pos(i * 400 - 800, height() + 400), // Alt kısma yerleştir
+      body({ isStatic: true }),
+      anchor("botleft"),
+      scale(0.6),
+
+    ]);
+  }
+
+  for (let i = 0; i < 20; i += 2) {
+    add([
+      sprite("cloud1"),
+      pos(i * 400 - 800, height() - 400), // Alt kısma yerleştir
+      body({ isStatic: true }),
+      anchor("botleft"),
+      scale(0.3),
+      z(1),
+    ]);
+  }
+
+  for (let i = 1; i < 20; i += 2) {
+    add([
+      sprite("cloud1"),
+      pos(i * 400 - 800, height() - 350), // Alt kısma yerleştir
+      body({ isStatic: true }),
+      anchor("botleft"),
+      scale(0.3),
+      z(1),
+    ]);
+  }
+
+  for (let i = 0; i < 20; i++) {
+    add([
+      sprite("cloud2"),
+      pos(i * 400 - 600, height() + 50), // Alt kısma yerleştir
+      body({ isStatic: true }),
+      anchor("botleft"),
+      scale(0.5),
+      z(1),
+    ]);
+  }
   
   const SPEED = 480;
   const JUMP_FORCE = 300;
@@ -69,14 +154,14 @@ scene("game", () => {
   // Custom property to track if the player is sliding
   player.isSliding = false;
   
-  // Update the camera position each frame
   player.onUpdate(() => {
-    setCamPos(player.worldPos());
+    const camX = player.pos.x; // Sadece X ekseninde takip
+    setCamPos(vec2(camX, 360)); // 360 = 720/2 (ekranın dikey ortası)
   });
   
-  // Also update camera position when physics are resolved
   player.onPhysicsResolve(() => {
-    setCamPos(player.worldPos());
+    const camX = player.pos.x; // Sadece X ekseninde takip
+    setCamPos(vec2(camX, 360));
   });
   
   // When the player is on the ground, switch animations (unless sliding)
@@ -172,16 +257,7 @@ scene("game", () => {
 
   
 
-  // Add a floor
-  add([
-    sprite("ground"),
-    rect(200, 24),
-    area(),
-    outline(1),
-    pos(0, height()),
-    body({ isStatic: true }),
-  ]);
-});
+  });
 
   
   
