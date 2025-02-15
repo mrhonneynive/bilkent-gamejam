@@ -1,7 +1,12 @@
 import kaplay from "kaplay";
 // import "kaplay/global"; // uncomment if you want to use without the k. prefix
 
-const k = kaplay();
+const k = kaplay({
+  width: 1280,
+  height: 960,
+  letterbox: true,
+  debug: true,
+});
 
 k.loadRoot("./"); // A good idea for Itch.io publishing later
 k.loadSprite("bean", "sprites/bean.png");

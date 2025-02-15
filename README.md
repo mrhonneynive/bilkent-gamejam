@@ -1,3 +1,7 @@
+# Todos
+
+- [ ] switch debug mode to false before building the game (in kaboom() function object parameter) 
+
 # Folder structure
 
 - `src` - source code for your kaplay project
