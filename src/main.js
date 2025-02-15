@@ -41,6 +41,15 @@ scene("game", () => {
     },
   });
   
+  loadSprite("ground", "sprites/ground.png");
+  add([
+    sprite("ground"), // Use the ground sprite
+    pos(-400, height() + 650), // Position it at the bottom of the screen
+    // area(), // Enable collision detection
+    body({ isStatic: true }), // Make it static so the player can walk on it
+    anchor("botleft"), // Align it properly at the bottom left
+  ]);
+  
   const SPEED = 480;
   const JUMP_FORCE = 300;
   const SLIDE_SPEED = SPEED * 1.5; // extra speed for slide
@@ -49,7 +58,7 @@ scene("game", () => {
   setGravity(640);
   
   const player = add([
-    sprite("player"),
+    sprite("player"),   
     pos(center()),
     anchor("center"),
     area(),
@@ -159,17 +168,22 @@ scene("game", () => {
             }
         });
     }
-});
+
 
   
+
   // Add a floor
   add([
-    rect(width(), 24),
+    sprite("ground"),
+    rect(200, 24),
     area(),
     outline(1),
     pos(0, height()),
     body({ isStatic: true }),
   ]);
+});
+
+  
   
 });
 
