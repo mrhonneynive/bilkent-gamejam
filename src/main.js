@@ -199,11 +199,12 @@ scene("game", () => {
   // Sarmaşığı başlangıçta ekleyip görünmez yap
   const vine = add([
     sprite("sirik"),
-    pos(3200, 450), // Sarmaşığın çıkacağı yer
-    scale(0.4),
+    pos(4100, 400), // Sarmaşığın çıkacağı yer
+    scale(2),
     anchor("center"),
     area(),
     opacity(0), // Başlangıçta görünmez
+    z(50),
     "vine",
   ]);
 
@@ -234,7 +235,7 @@ scene("game", () => {
   
     if (score === 5) {
       vine.opacity = 1; // Sarmaşığı görünür yap
-      debug.log("Sarmaşık açıldı!");
+      debug.log("Sırık mevcutlaştırıldı!");
     }
   });
 
@@ -300,10 +301,55 @@ onKeyPress("b", () => {
     fasulyeCount++;
 
     if (fasulyeCount >= 5) {
-      debug.log("Oyun Bitti!");
+      debug.log("Hayat Bitti!");
       wait(1, () => go("menu")); // 1 saniye bekleyip menüye dön
     }
   });
+  
+});
+
+let sirikHealth = 5; // Başlangıçta 5 can
+
+// Can barı ekleme
+const healthBar = add([
+  rect(200, 20), // Barın boyutu
+  pos(20, 60), // Konumu
+  color(255, 0, 0), // Kırmızı
+  fixed(), // Kamera hareket etse bile sabit kalır
+  z(100), // Üst katmanda olması için
+]);
+
+// Sarmaşık (sirik.png) için olay
+onCollide("fasulye", "vine", (fasulye, vine) => {
+  destroy(fasulye); // Fasulyeyi yok et
+  sirikHealth--; // Canı azalt
+
+  // Can barını güncelle
+  healthBar.width = (sirikHealth / 5) * 200;
+
+  if (sirikHealth <= 0) {
+    destroy(vine); // Sarmaşığı yok et
+    debug.log("Sırık yok edildi haha!");
+  }
+});
+
+player.onCollide("vine", () => {
+  // You can destroy the player or trigger some kind of "death" behavior
+  destroy(player);
+  
+  const gameOverText = add([
+    text("HAYAT BİTTİ", { size: 100, font: "sink" }), // You can adjust the font and size
+    pos(center().x, center().y - 100), // Center the text on the screen, slightly above the center
+    color(255, 0, 0), // Red color for the text
+    z(200), // Make sure the text is above other elements
+    fixed(), // Make the text fixed so it doesn't move with the camera
+  ]);
+
+  // Wait for 1 second before going back to the menu
+  wait(4, () => {
+    destroy(gameOverText); // Remove the "Hayat Bitti" text
+    go("menu"); // Go back to the menu
+  });// After 1 second, go back to the menu (you can adjust this as needed)
 });
 
 
